@@ -12,7 +12,6 @@ auth = Blueprint("auth", __name__)
 
 @auth.route("/google-auth", methods=["POST"])
 def google_auth():
-    print("lala")
     idToken = request.json["idToken"]
     try:
         id_info = id_token.verify_oauth2_token(
