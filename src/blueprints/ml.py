@@ -6,19 +6,12 @@ ml = Blueprint("ml", __name__)
 
 
 @ml.route("/user_assesment", methods=["POST"])
-# def user_assesment(user_assesment: QuestionDef) -> QuestionRsDef:
 def user_assesmentd():
     user_assesment_data = request.get_json()
     user_assesment = QuestionDef(**user_assesment_data)
     model_manager = ModelManager()
     user_assesment_label = model_manager.label_student(user_assesment=user_assesment)
 
-    # return QuestionRsDef(
-    #     **{
-    #         "student_id": user_assesment.student_id,
-    #         "user_category": user_assesment_label,
-    #     }
-    # )
     return jsonify(
         {
             "student_id": user_assesment.student_id,
