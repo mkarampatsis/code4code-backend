@@ -45,3 +45,7 @@ class User(me.Document):
     @staticmethod
     def get_user_by_google_id(googleId: str) -> "User":
         return User.objects(googleId=googleId).first()
+
+    @staticmethod
+    def get_user_by_email(email: str) -> "User":
+        return User.objects(email=email).first()

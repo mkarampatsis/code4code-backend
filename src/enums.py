@@ -15,7 +15,7 @@ class UserCourse(Enum):
 
 
 class UserLevel(Enum):
-    IGNORANT = "ignorant"
+    NOVICE = "novice"
     BEGINNER = "beginner"
     INTERMEDIATE = "intermediate"
     EXPERT = "expert"
