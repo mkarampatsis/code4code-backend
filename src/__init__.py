@@ -3,7 +3,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_swagger_ui import get_swaggerui_blueprint
 from mongoengine import connect
-from src.config import JWT_SECRET_KEY, MONGODB_URI
+from src.config import JWT_SECRET_KEY, MONGO_DBNAME, MONGO_HOST, MONGO_PORT
 from src.blueprints.auth import auth
 from src.blueprints.ml import ml
 
@@ -11,9 +11,17 @@ app = Flask(__name__)
 jwt = JWTManager(app)
 app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
 
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(
+    app,
+    resources={r"*": {"origins": ["http://localhost:4200"]}},
+)
 
-connect(host=MONGODB_URI, alias="code4code")
+connect(
+    alias=MONGO_DBNAME,
+    db=MONGO_DBNAME,
+    host=MONGO_HOST,
+    port=MONGO_PORT,
+)
 
 app.register_blueprint(auth, url_prefix="/auth")
 app.register_blueprint(ml, url_prefix="/ml")

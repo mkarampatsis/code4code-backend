@@ -17,7 +17,6 @@ def google_auth():
         id_info = id_token.verify_oauth2_token(
             idToken, requests.Request(), GOOGLE_AUDIENCE
         )
-        print(id_info)
     except Exception as e:
         print(e)
         return Response({"error": "Invalid user"}, status=401)
