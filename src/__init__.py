@@ -13,7 +13,7 @@ app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
 
 CORS(
     app,
-    resources={r"*": {"origins": ["http://localhost:4200"]}},
+    resources={r"*": {"origins": ["http://localhost:4200", "https://code4code.ddns.net"]}},
 )
 
 connect(
