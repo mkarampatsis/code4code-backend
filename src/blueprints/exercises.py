@@ -4,6 +4,7 @@ import json
 
 exercises = Blueprint("exercises", __name__)
 
+
 @exercises.route("/one/<string:code>", methods=["GET"])
 def get_exercise(code):
     try:
@@ -16,10 +17,11 @@ def get_exercise(code):
             status=404,
         )
 
+
 @exercises.route("/all/<string:type>", methods=["GET"])
 def get_all_exercises_by_type(type):
     try:
-        exercises = Exercise.objects.get(type=type)
+        exercises = Exercise.objects(type=type)
         return Response(exercises.to_json(), mimetype="application/json", status=200)
     except Exercise.DoesNotExist:
         return Response(
