@@ -21,6 +21,7 @@ def get_exercise(code):
 @exercises.route("/all/<string:type>", methods=["GET"])
 def get_all_exercises_by_type(type):
     try:
+        print("Get all exercises")
         exercises = Exercise.objects(type=type)
         return Response(exercises.to_json(), mimetype="application/json", status=200)
     except Exercise.DoesNotExist:
