@@ -2,9 +2,10 @@ from enum import Enum
 
 
 class UserCategory(Enum):
-    STUDENT = "student"
-    TEACHER = "teacher"
-    INSTITUTION = "institution"
+    LEARNER = "learner"
+    INSTRUCTOR = "instructor"
+    # INSTITUTION = "institution"
+    ADMINISTRATOR = "administrator"
     NONE = "none"
 
 

@@ -7,12 +7,10 @@ class UserAssessment(me.EmbeddedDocument):
     course = me.EnumField(UserCourse, required=True)
     level = me.EnumField(UserLevel, required=True)
 
-
 class UserEvaluationAnswer(me.EmbeddedDocument):
     question_id = me.StringField(required=True)
     answer_text = me.StringField(required=True)
     correct = me.BooleanField(required=True)
-
 
 class UserEvaluation(me.EmbeddedDocument):
     course = me.EnumField(UserCourse, required=True)
@@ -20,7 +18,10 @@ class UserEvaluation(me.EmbeddedDocument):
     date = me.DateTimeField(required=True)
     answers = me.ListField(me.EmbeddedDocumentField(UserEvaluationAnswer), required=True)
 
-
+class UserRoles(me.EmbeddedDocument):
+    category = me.EnumField(UserCategory, required=True, default=UserCategory.NONE)
+    course = me.EnumField(UserCourse, required=True)
+    
 class User(me.Document):
     email = me.EmailField(required=True, unique=True)
     firstName = me.StringField(required=True)
@@ -31,9 +32,11 @@ class User(me.Document):
     provider = me.StringField(required=True, choices=["GOOGLE"], default="GOOGLE")
     isAdmin = me.BooleanField(required=True, default=False)
     isEnabled = me.BooleanField(required=True, default=False)
-    category = me.EnumField(UserCategory, required=True, default=UserCategory.NONE)
+    # category = me.EnumField(UserCategory, required=True, default=UserCategory.NONE)
+    category = me.ListField(me.StringField())
     assessments = me.ListField(me.EmbeddedDocumentField(UserAssessment))
     evaluations = me.ListField(me.EmbeddedDocumentField(UserEvaluation))
+    roles = me.ListField(me.EmbeddedDocumentField(UserRoles))
 
     meta = {"collection": "users", "db_alias": MONGO_DBNAME}
 

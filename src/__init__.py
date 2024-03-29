@@ -7,6 +7,7 @@ from src.config import JWT_SECRET_KEY, MONGO_DBNAME, MONGO_HOST, MONGO_PORT
 from src.blueprints.auth import auth
 from src.blueprints.ml import ml
 from src.blueprints.exercises import exercises
+from src.blueprints.evalQuestions import evalExercises
 
 app = Flask(__name__)
 jwt = JWTManager(app)
@@ -26,4 +27,5 @@ connect(
 
 app.register_blueprint(auth, url_prefix="/auth")
 app.register_blueprint(ml, url_prefix="/ml")
-app.register_blueprint(exercises,url_prefix="/exercises" )
+app.register_blueprint(exercises, url_prefix="/exercises" )
+app.register_blueprint(evalExercises, url_prefix="/evaluation" )

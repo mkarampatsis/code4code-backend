@@ -4,7 +4,6 @@ import json
 
 exercises = Blueprint("exercises", __name__)
 
-
 @exercises.route("/one/<string:code>", methods=["GET"])
 def get_exercise(code):
     try:

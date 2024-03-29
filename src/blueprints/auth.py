@@ -51,7 +51,9 @@ def google_auth():
 def update_profile():
     user = User.get_user_by_email(get_jwt_identity())
     data = request.json
-    user.update(**data, isEnabled=True)
+    print (data, data["category"])
+    # user.update(**data, isEnabled=True)
+    user.update(category=[data["category"]], isEnabled=True)
     user.reload()
     user = user.to_mongo_dict()
     return Response(json.dumps({"user": user, "msg": "User profile is updated"}), status=200)
