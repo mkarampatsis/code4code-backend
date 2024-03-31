@@ -1,10 +1,12 @@
 from flask import Blueprint, request, Response, jsonify
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from src.models.exercise import Exercise
 import json
 
 exercises = Blueprint("exercises", __name__)
 
 @exercises.route("/one/<string:code>", methods=["GET"])
+@jwt_required()
 def get_exercise(code):
     try:
         exercise = Exercise.objects.get(exercise=code)
@@ -18,6 +20,7 @@ def get_exercise(code):
 
 
 @exercises.route("/all/<string:type>", methods=["GET"])
+@jwt_required()
 def get_all_exercises_by_type(type):
     try:
         print("Get all exercises")

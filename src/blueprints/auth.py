@@ -5,10 +5,15 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_requir
 from src.config import GOOGLE_AUDIENCE
 from src.models.user import User
 import json
-
+import datetime 
 
 auth = Blueprint("auth", __name__)
 
+# Define a custom function to serialize datetime objects 
+def serialize_datetime(obj): 
+    if isinstance(obj, datetime.datetime): 
+        return obj.isoformat() 
+    raise TypeError("Type not serializable") 
 
 @auth.route("/google-auth", methods=["POST"])
 def google_auth():
@@ -63,4 +68,4 @@ def update_profile():
 @jwt_required()
 def get_user():
     user = User.get_user_by_email(get_jwt_identity())
-    return Response(json.dumps(user.to_mongo_dict()), status=200)
+    return Response(json.dumps(user.to_mongo_dict(), default=serialize_datetime), status=200)

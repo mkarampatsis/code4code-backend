@@ -9,12 +9,13 @@ class UserAssessment(me.EmbeddedDocument):
 
 class UserEvaluationAnswer(me.EmbeddedDocument):
     question_id = me.StringField(required=True)
-    answer_text = me.StringField(required=True)
+    # answer_text = me.StringField(required=True)
     correct = me.BooleanField(required=True)
 
 class UserEvaluation(me.EmbeddedDocument):
     course = me.EnumField(UserCourse, required=True)
     score = me.FloatField(required=True)
+    level = me.EnumField(UserLevel, required=True)
     date = me.DateTimeField(required=True)
     answers = me.ListField(me.EmbeddedDocumentField(UserEvaluationAnswer), required=True)
 
