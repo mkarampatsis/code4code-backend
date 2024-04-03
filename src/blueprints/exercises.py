@@ -1,6 +1,7 @@
 from flask import Blueprint, request, Response, jsonify
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from src.models.exercise import Exercise
+from bson.json_util import dumps, loads 
 import json
 
 exercises = Blueprint("exercises", __name__)
@@ -29,6 +30,24 @@ def get_all_exercises_by_type(type):
     except Exercise.DoesNotExist:
         return Response(
             json.dumps({"error": f"Failed to load {type} exercises"}),
+            mimetype="application/json",
+            status=404,
+        )
+    
+@exercises.route("/learner/<string:course>", methods=["GET"])
+# @jwt_required()
+def get_learner_exercises_by_course(course):
+    try:
+        print("Get learner exercises")
+        pipeline = [
+            {"$match" : {"type" : course}},
+            {"$sample": {"size": 1}}
+        ]
+        exercises = Exercise.objects.aggregate(pipeline)
+        return Response(dumps(list(exercises)), mimetype="application/json", status=200)
+    except Exercise.DoesNotExist:
+        return Response(
+            json.dumps({"error": f"Failed to load learner's {course} exercises"}),
             mimetype="application/json",
             status=404,
         )

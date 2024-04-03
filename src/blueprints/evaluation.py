@@ -3,8 +3,15 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_requir
 from src.models.evaluation import EvalQuestion
 from src.models.user import User
 import json
+import datetime 
 
 evalExercises = Blueprint("evaluation", __name__)
+
+# Define a custom function to serialize datetime objects 
+def serialize_datetime(obj): 
+    if isinstance(obj, datetime.datetime): 
+        return obj.isoformat() 
+    raise TypeError("Type not serializable") 
 
 # Evaluation Questions
 @evalExercises.route("/questions/<string:course>", methods=["GET"])
@@ -25,8 +32,10 @@ def get_eval_questions(course):
 def setUserEvaluations():
     user = User.get_user_by_email(get_jwt_identity())
     data = request.json
-    print (data)
+    print(data)
+    # user.evaluations.append(data)
     user.update(evaluations=[data])
+    # user.save()
     user.reload()
     user = user.to_mongo_dict()
-    return Response(json.dumps({"user": user, "msg": "User profile is updated"}), status=200)
+    return Response(json.dumps({"user": user, "msg": "User profile is updated"}, default=serialize_datetime), status=200)
