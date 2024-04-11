@@ -22,6 +22,7 @@ class UserEvaluation(me.EmbeddedDocument):
 class UserRoles(me.EmbeddedDocument):
     category = me.EnumField(UserCategory, required=True, default=UserCategory.NONE)
     course = me.EnumField(UserCourse, required=True)
+    isEnabled = me.BooleanField(required=True, default=False)
     
 class User(me.Document):
     email = me.EmailField(required=True, unique=True)
@@ -34,7 +35,7 @@ class User(me.Document):
     isAdmin = me.BooleanField(required=True, default=False)
     isEnabled = me.BooleanField(required=True, default=False)
     # category = me.EnumField(UserCategory, required=True, default=UserCategory.NONE)
-    category = me.ListField(me.StringField())
+    # category = me.ListField(me.StringField())
     assessments = me.ListField(me.EmbeddedDocumentField(UserAssessment))
     evaluations = me.ListField(me.EmbeddedDocumentField(UserEvaluation))
     roles = me.ListField(me.EmbeddedDocumentField(UserRoles))
