@@ -1,6 +1,7 @@
 from flask import Blueprint, request, Response, jsonify
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from src.models.exercise import Exercise
+from src.models.evaluation import UserTraining
 from bson.json_util import dumps, loads 
 import json
 
@@ -51,3 +52,26 @@ def get_learner_exercises_by_course(course):
             mimetype="application/json",
             status=404,
         )
+    
+@exercises.route("/learner/training/<string:email>", methods=["GET"])
+# @jwt_required()
+def get_learner_training_exercises(email):
+    try:
+        print("Get all exercises")
+        exercises = UserTraining.objects(email=email)
+        return Response(exercises.to_json(), mimetype="application/json", status=200)
+    except UserTraining.DoesNotExist:
+        return Response(
+            json.dumps({"error": f"Failed to load {type} training exercises"}),
+            mimetype="application/json",
+            status=404,
+        )
+    
+@exercises.route("/training/exercise/evaluation", methods=["PATCH"])
+@jwt_required()
+def setTrainingExerciseEvaluation():
+    data = request.json
+    exercise = UserTraining.objects.get(id=data['id']['$oid'])
+    exercise.evaluation = data["evaluation"]
+    exercise.save()
+    return Response(json.dumps({"exercise": exercise.to_json(), "msg": "Exercise evaluation is updated"}), status=200)

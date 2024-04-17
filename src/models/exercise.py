@@ -36,4 +36,8 @@ class Exercise(me.Document):
     output = me.ListField(me.StringField())
     difficulty = me.StringField(required=True)
 
-    meta = {"collection": "exercises", "db_alias": MONGO_DBNAME}
+    meta = {
+        "collection": "exercises", 
+        "db_alias": MONGO_DBNAME,
+        "indexes": ["exercise"]    
+    }

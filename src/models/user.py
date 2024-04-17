@@ -40,7 +40,11 @@ class User(me.Document):
     evaluations = me.ListField(me.EmbeddedDocumentField(UserEvaluation))
     roles = me.ListField(me.EmbeddedDocumentField(UserRoles))
 
-    meta = {"collection": "users", "db_alias": MONGO_DBNAME}
+    meta = {
+        "collection": "users", 
+        "db_alias": MONGO_DBNAME,
+        "indexes": ["email"]
+    }
 
     def to_mongo_dict(self):
         mongo_dict = self.to_mongo().to_dict()
