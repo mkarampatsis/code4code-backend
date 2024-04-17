@@ -1,6 +1,6 @@
 from flask import Blueprint, request, Response, jsonify
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
-from src.models.evaluation import EvalQuestion, UserTraining
+from src.models.evaluation import EvalQuestion
 from src.models.user import User, UserEvaluation
 import json
 import datetime 

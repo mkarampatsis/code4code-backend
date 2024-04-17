@@ -1,6 +1,7 @@
 from src.config import MONGO_DBNAME
 import mongoengine as me
-
+from src.models.user import User
+from src.enums import UserCategory, UserCourse, UserLevel
 
 class ExerciseSubchapter(me.EmbeddedDocument):
     chapter = me.StringField()
@@ -41,3 +42,16 @@ class Exercise(me.Document):
         "db_alias": MONGO_DBNAME,
         "indexes": ["exercise"]    
     }
+
+class TrainingExercises (me.Document):
+    email = me.StringField(required=True)
+    category = me.EnumField(UserCategory, required=True, default=UserCategory.NONE)
+    course = me.EnumField(UserCourse, required=True)
+    level = me.EnumField(UserLevel, required=True)
+    answer = me.StringField(required=True)
+    output = me.StringField(required=True)
+    exercise = me.ReferenceField(Exercise) 
+    user = me.ReferenceField(User)
+    rate = me.IntField()
+
+    meta = {"collection": "training", "db_alias": MONGO_DBNAME} 
