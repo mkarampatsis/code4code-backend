@@ -49,9 +49,9 @@ class TrainingExercises (me.Document):
     course = me.EnumField(UserCourse, required=True)
     level = me.EnumField(UserLevel, required=True)
     answer = me.StringField(required=True)
-    output = me.StringField(required=True)
+    output = me.DynamicField(required=True)
     exercise = me.ReferenceField(Exercise) 
     user = me.ReferenceField(User)
-    rate = me.IntField()
+    rate = me.StringField()
 
     meta = {"collection": "training", "db_alias": MONGO_DBNAME} 

@@ -57,8 +57,8 @@ def update_profile():
     user = User.get_user_by_email(get_jwt_identity())
     data = request.json
     role = UserRoles(
-        category = "learner" if "Learner" in data["category"] else "instructor",
-        course =  "javascript" if "js" in data["category"] else "python",
+        category = "learner" if "learner" in data["category"] else "instructor",
+        course =  "javascript" if "javascript" in data["course"] else "python",
         isEnabled = True,
     )
     user.roles.append(role)
