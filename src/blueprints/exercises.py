@@ -4,8 +4,15 @@ from src.models.exercise import Exercise, TrainingExercises
 from bson.json_util import dumps, loads 
 from src.enums import pyChapter, jsChapter
 import json
+import datetime 
 
 exercises = Blueprint("exercises", __name__)
+
+# Define a custom function to serialize datetime objects 
+def serialize_datetime(obj): 
+    if isinstance(obj, datetime.datetime): 
+        return obj.isoformat() 
+    raise TypeError("Type not serializable") 
 
 @exercises.route("/one/<string:code>", methods=["GET"])
 @jwt_required()
@@ -28,7 +35,12 @@ def get_exercise(code):
 def get_all_exercises_by_type(type):
     try:
         print("Get all exercises")
-        exercises = Exercise.objects(type=type)
+        if type =='all':
+            courses = ['python', 'javascript']
+        else:
+            courses = [type]
+ 
+        exercises = Exercise.objects.filter(type__in=courses)
         return Response(exercises.to_json(), mimetype="application/json", status=200)
     except Exercise.DoesNotExist:
         return Response(
@@ -149,6 +161,7 @@ def set_exercise():
         data = request.get_json()
         exercise = Exercise(**data)
         exercise.save()
+        
         return Response(exercise.to_json(), mimetype="application/json", status=201)
     except Exception as e:
         return Response(
@@ -157,13 +170,31 @@ def set_exercise():
             status=500,
         )
     
+@exercises.route("/exercise", methods=["PATCH"])
+# @jwt_required()
+def update_exercise():
+    try: 
+        print("Update Exercise")
+        data = request.json
+        del data["_id"]
+        exercise = Exercise.objects.get(exercise=data['exercise'])
+        exercise.update(**data)
+        exercise.reload()
+        return Response(exercise.to_json(), mimetype="application/json", status=201)   
+    except Exception as e:
+        return Response(
+            json.dumps({"error": f"Exercise failed to update: {e}"}),
+            mimetype="application/json",
+            status=500,
+        ) 
+    
 ########################
 ### TRAINING QUERIES ###
 ########################
 
 @exercises.route("/training/<string:email>", methods=["GET"])
 @jwt_required()
-def get_training_exercises(email):
+def get_training_exercises_for_user(email):
     try:
         exercises = TrainingExercises.objects(email=email)
         return Response(exercises.to_json(), mimetype="application/json", status=200)
@@ -174,27 +205,27 @@ def get_training_exercises(email):
             status=404,
         )
 
-@exercises.route("/training/learner/<string:email>", methods=["GET"])
-@jwt_required()
-def get_learner_training_exercises(email):
-    try:
-        print("Get all training exercises for learner")
-        exercises = TrainingExercises.objects(email=email)
-        return Response(exercises.to_json(), mimetype="application/json", status=200)
-    except TrainingExercises.DoesNotExist:
-        return Response(
-            json.dumps({"error": f"Failed to load {type} training exercises for learner"}),
-            mimetype="application/json",
-            status=404,
-        )
+# @exercises.route("/training/learner/<string:email>", methods=["GET"])
+# @jwt_required()
+# def get_learner_training_exercises(email):
+#     try:
+#         print("Get all training exercises for learner")
+#         exercises = TrainingExercises.objects(email=email)
+#         return Response(exercises.to_json(), mimetype="application/json", status=200)
+#     except TrainingExercises.DoesNotExist:
+#         return Response(
+#             json.dumps({"error": f"Failed to load {type} training exercises for learner"}),
+#             mimetype="application/json",
+#             status=404,
+#         )
 
 @exercises.route("/training/count/<string:email>/<string:category>/<string:course>", methods=["GET"])
 # @jwt_required()
 def get_count_learner_training_exercises(email, category, course):
     try:
         print("Count all training exercises for learner by course", email, category, course)
-        exercises = TrainingExercises.objects(email=email, category=category, course=course).count()
-        return Response(str(exercises), mimetype="application/json", status=200)
+        exercises = TrainingExercises.objects(email=email, category=category, course=course)
+        return Response(exercises.to_json(), mimetype="application/json", status=200)
     except TrainingExercises.DoesNotExist:
         return Response(
             json.dumps({"error": f"Failed to load all training exercises for learner by course"}),
@@ -215,6 +246,25 @@ def set_training_exercises():
     except Exception as e:
         return Response(
             json.dumps({"error": f"Training exercise failed to be saved: {e}"}),
+            mimetype="application/json",
+            status=500,
+        )
+
+@exercises.route("/training", methods=["PATCH"])
+@jwt_required()
+def update_training_exercises():
+    try:
+        print("Training exercise to be updated")
+        data = request.get_json()
+        print(">>>",data['exercise']['exercise'], data)
+        exercise = TrainingExercises.objects.get(email=data['email'], exercise__exercise=data['exercise']['exercise'])
+        print(exercise)
+        exercise.update(**data)
+        exercise.reload()
+        return Response(exercise.to_json(), mimetype="application/json", status=201)
+    except Exception as e:
+        return Response(
+            json.dumps({"error": f"Training exercise failed to be updated: {e}"}),
             mimetype="application/json",
             status=500,
         )
