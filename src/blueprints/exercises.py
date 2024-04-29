@@ -18,6 +18,7 @@ def serialize_datetime(obj):
 @jwt_required()
 def get_exercise(code):
     try:
+        print("Get an exercise with specific id")
         exercise = Exercise.objects.get(exercise=code)
         return Response(exercise.to_json(), mimetype="application/json", status=200)
     except Exercise.DoesNotExist:
