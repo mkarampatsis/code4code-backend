@@ -32,6 +32,7 @@ def get_eval_questions(course):
 def setUserEvaluations():
     user = User.get_user_by_email(get_jwt_identity())
     data = request.json
+    data['date']=datetime.datetime.fromisoformat(data['date'])
     evaluation = UserEvaluation(**data)
     user.evaluations.append(evaluation)
     # user.update(evaluations=[data])
